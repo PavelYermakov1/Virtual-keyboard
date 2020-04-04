@@ -131,17 +131,35 @@ class VirtualKeyboard {
         default:
           break;
       }
-
       this.fragment.appendChild(keyElement);
-
-
       if (insertLineBreak) {
         this.fragment.appendChild(document.createElement('br'));
       }
     });
-
-
     return this.fragment;
+  }
+
+  lightKeys() {
+    this.elements.keysContainer.addEventListener('mousedown', (event) => {
+      if (event.target.tagName === 'BUTTON') {
+        event.target.classList.add('active');
+      }
+    });
+    this.elements.keysContainer.addEventListener('mouseup', (event) => {
+      if (event.target.tagName === 'BUTTON') {
+        event.target.classList.remove('active');
+      }
+    });
+    document.body.addEventListener('keydown', (event) => {
+      event.preventDefault();
+      const key = this.elements.keysContainer.querySelector(`.keyboard__note[id = "${event.code}"]`);
+      key.classList.add('active');
+    });
+    document.body.addEventListener('keyup', (event) => {
+      event.preventDefault();
+      const key = this.elements.keysContainer.querySelector(`.keyboard__note[id = "${event.code}"]`);
+      key.classList.remove('active');
+    });
   }
 }
 
@@ -149,4 +167,5 @@ class VirtualKeyboard {
 window.onload = function () {
   const virtualKeyboard = new VirtualKeyboard();
   virtualKeyboard.render();
+  virtualKeyboard.lightKeys();
 };

@@ -79,3 +79,7 @@
     min-width: 285px;
     background-color: rgba(58, 66, 78, 1);
 }
+
+.active {
+    background-color: rgb(85,113,238) !important;
+}
