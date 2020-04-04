@@ -1,0 +1,60 @@
+.wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.textarea {
+    height: 150px;
+    width: 700px;
+    margin: auto;
+    margin-top: 100px;
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.keyboard {
+    width: 710px;
+    padding-top: 15px;
+    margin: auto;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.keys__container {
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.keyboard__note {
+    height: 40px;
+    min-width: 40px;
+    border-radius: 3px;
+    background-color: rgba(58, 66, 78, 1);
+    margin: 3px;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+}
+
+.key {
+    height: 40px;
+    min-width: 40px;
+    border-radius: 3px;
+    background-color: rgba(58, 66, 78, 1);
+    margin: 3px;
+    border: none;
+    color: #ffffff;
+    font-size: 1rem;
+    outline: none;
+    cursor: pointer;
+    padding: 0;
+    position: relative;
+}
