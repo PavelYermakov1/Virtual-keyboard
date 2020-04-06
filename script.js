@@ -140,31 +140,136 @@ class VirtualKeyboard {
   }
 
   lightKeys() {
-    this.elements.keysContainer.addEventListener('mousedown', (event) => {
+    console.log(this.props);
+    console.log(this.elements);
+    document.body.addEventListener('mousedown', (event) => {
       if (event.target.tagName === 'BUTTON') {
         event.target.classList.add('active');
       }
+      this.elements.keys.forEach((elem) => {
+        if (event.target === elem && elem.textContent.length === 1) {
+          this.props.textValue += elem.textContent;
+          this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'Backspace') {
+          const textareaLength = this.elements.textarea.value.length;
+          this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
+          this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'Tab') {
+          this.props.textValue += '    ';
+          this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'Enter') {
+          this.props.textValue += '\n';
+          this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'Space') {
+          this.props.textValue += ' ';
+          this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'CapsLock') {
+          this.elemUpDownKeys();
+        } else if (event.target === elem && (elem.id === 'ShiftLeft' || elem.id === 'ShiftRight')) {
+          this.elemUpDownKeys();
+        }
+      });
     });
-    this.elements.keysContainer.addEventListener('mouseup', (event) => {
+    document.body.addEventListener('mouseup', (event) => {
       if (event.target.tagName === 'BUTTON') {
         event.target.classList.remove('active');
       }
+      this.elements.keys.forEach((elem) => {
+        this.elements.textarea.focus();
+        if (event.target === elem && (elem.id === 'ShiftLeft' || elem.id === 'ShiftRight')) {
+          this.elemUpDownKeys();
+        }
+      });
     });
     document.body.addEventListener('keydown', (event) => {
       event.preventDefault();
       const key = this.elements.keysContainer.querySelector(`.keyboard__note[id = "${event.code}"]`);
       key.classList.add('active');
+
+      if (event.key.length === 1) {
+        this.props.textValue += key.textContent;
+        this.inTextArea(this.props.textValue);
+      } else if (event.code === 'Backspace') {
+        const textareaLength = this.elements.textarea.value.length;
+        this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
+        this.inTextArea(this.props.textValue);
+      } else if (event.code === 'Tab') {
+        this.props.textValue += '    ';
+        this.inTextArea(this.props.textValue);
+      } else if (event.code === 'Enter') {
+        this.props.textValue += '\n';
+        this.inTextArea(this.props.textValue);
+      } else if (event.code === 'Space') {
+        this.props.textValue += ' ';
+        this.inTextArea(this.props.textValue);
+      } else if (event.code === 'CapsLock') {
+        if (event.repeat) {
+          return;
+        }
+        this.elemUpDownKeys();
+      } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+        if (!event.repeat) {
+          this.elemUpDownKeys();
+        }
+      }
     });
+
+
     document.body.addEventListener('keyup', (event) => {
       event.preventDefault();
       const key = this.elements.keysContainer.querySelector(`.keyboard__note[id = "${event.code}"]`);
       key.classList.remove('active');
+
+      if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+        this.elemUpDownKeys();
+      }
     });
+  }
+
+  inTextArea(value) {
+    this.elements.textarea.value = value || '';
+    document.querySelector('textarea').value = this.elements.textarea.value;
+  }
+
+  elemUpDownKeys() {
+    if (this.props.lang === this.keyLayout.eng) {
+      this.elements.keys.forEach((item, i) => {
+        const element = item;
+        element.textContent = this.keyLayout.engShift[i];
+      });
+      this.props.lang = this.keyLayout.engShift;
+      localStorage.setItem('lang', this.props.lang);
+      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    } else if (this.props.lang === this.keyLayout.ru) {
+      this.elements.keys.forEach((item, i) => {
+        const element = item;
+        element.textContent = this.keyLayout.ruShift[i];
+      });
+      this.props.lang = this.keyLayout.ruShift;
+      localStorage.setItem('lang', this.props.lang);
+      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    } else if (this.props.lang === this.keyLayout.engShift) {
+      this.elements.keys.forEach((item, i) => {
+        const element = item;
+        element.textContent = this.keyLayout.eng[i];
+      });
+      this.props.lang = this.keyLayout.eng;
+      localStorage.setItem('lang', this.props.lang);
+      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    } else if (this.props.lang === this.keyLayout.ruShift) {
+      this.elements.keys.forEach((item, i) => {
+        const element = item;
+        element.textContent = this.keyLayout.ru[i];
+      });
+      this.props.lang = this.keyLayout.ru;
+      localStorage.setItem('lang', this.props.lang);
+      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    }
   }
 }
 
 
-window.onload = function () {
+window.onload = function load() {
   const virtualKeyboard = new VirtualKeyboard();
   virtualKeyboard.render();
   virtualKeyboard.lightKeys();
