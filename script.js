@@ -6,6 +6,7 @@ class VirtualKeyboard {
       keyboard: null,
       keysContainer: null,
       keys: [],
+      infoText: null,
     };
 
     this.props = {
@@ -62,10 +63,15 @@ class VirtualKeyboard {
     this.elements.wrapper.className = 'wrapper';
     this.elements.textarea = document.createElement('textarea');
     this.elements.textarea.className = 'textarea';
+    this.elements.textarea.setAttribute('disabled', 'disabled');
     this.elements.keyboard = document.createElement('div');
     this.elements.keyboard.className = 'keyboard';
     this.elements.keysContainer = document.createElement('div');
     this.elements.keysContainer.className = 'keys__container';
+    this.elements.infoText = document.createElement('p');
+    this.elements.infoText.className = 'infoText';
+    this.elements.infoText.textContent = 'Сделано в  OS Windows; Смена языка - Shift + Ctrl left';
+
 
     this.props.lang = this.keyLayout.eng;
     if (window.localStorage.getItem('lang') === 'ru') {
@@ -85,7 +91,8 @@ class VirtualKeyboard {
     this.elements.keysContainer.appendChild(this.renderKeys(this.props.lang));
     this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
     this.elements.keyboard.appendChild(this.elements.keysContainer);
-    this.elements.wrapper.append(this.elements.textarea, this.elements.keyboard);
+    this.elements.wrapper.append(this.elements.textarea,
+      this.elements.keyboard, this.elements.infoText);
     document.body.append(this.elements.wrapper);
   }
 
@@ -151,6 +158,10 @@ class VirtualKeyboard {
           const textareaLength = this.elements.textarea.value.length;
           this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
           this.inTextArea(this.props.textValue);
+        } else if (event.target === elem && elem.id === 'Delete') {
+          const textareaLength = this.elements.textarea.value.length;
+          this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
+          this.inTextArea(this.props.textValue);
         } else if (event.target === elem && elem.id === 'Tab') {
           this.props.textValue += '    ';
           this.inTextArea(this.props.textValue);
@@ -193,6 +204,10 @@ class VirtualKeyboard {
         const textareaLength = this.elements.textarea.value.length;
         this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
         this.inTextArea(this.props.textValue);
+      } else if (event.code === 'Delete') {
+        const textareaLength = this.elements.textarea.value.length;
+        this.props.textValue = this.elements.textarea.value.substring(0, textareaLength - 1);
+        this.inTextArea(this.props.textValue);
       } else if (event.code === 'Tab') {
         this.props.textValue += '    ';
         this.inTextArea(this.props.textValue);
@@ -218,7 +233,7 @@ class VirtualKeyboard {
       } else if (event.code === 'ArrowDown') {
         this.props.textValue += '▼';
         this.inTextArea(this.props.textValue);
-      } else if (event.shiftKey && event.code === 'AltLeft') {
+      } else if (event.shiftKey && event.code === 'ControlLeft') {
         this.changeLanguage();
       }
     });
