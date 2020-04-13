@@ -1,3 +1,4 @@
+/* eslint-disable default-case */
 class VirtualKeyboard {
   constructor() {
     this.elements = {
@@ -218,9 +219,14 @@ class VirtualKeyboard {
         this.props.textValue += ' ';
         this.inTextArea(this.props.textValue);
       } else if (event.code === 'CapsLock') {
+        if (event.repeat) {
+          return;
+        }
         this.elemUpDownKeys();
       } else if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-        this.elemUpDownKeys();
+        if (!event.repeat) {
+          this.elemUpDownKeys();
+        }
       } else if (event.code === 'ArrowUp') {
         this.props.textValue += '▲';
         this.inTextArea(this.props.textValue);
@@ -256,75 +262,54 @@ class VirtualKeyboard {
   }
 
   elemUpDownKeys() {
-    if (this.props.lang === this.keyLayout.eng) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.engShift[i];
-      });
-      this.props.lang = this.keyLayout.engShift;
-      window.localStorage.setItem('lang', 'engShift');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.ru) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.ruShift[i];
-      });
-      this.props.lang = this.keyLayout.ruShift;
-      window.localStorage.setItem('lang', 'ruShift');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.engShift) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.eng[i];
-      });
-      this.props.lang = this.keyLayout.eng;
-      window.localStorage.setItem('lang', 'eng');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.ruShift) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.ru[i];
-      });
-      this.props.lang = this.keyLayout.ru;
-      window.localStorage.setItem('lang', 'ru');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    switch (this.props.lang) {
+      case this.keyLayout.eng:
+        this.changeLanguageItem(this.keyLayout.engShift);
+        window.localStorage.setItem('lang', 'engShift');
+        break;
+      case this.keyLayout.engShift:
+        this.changeLanguageItem(this.keyLayout.eng);
+        window.localStorage.setItem('lang', 'eng');
+        break;
+      case this.keyLayout.ru:
+        this.changeLanguageItem(this.keyLayout.ruShift);
+        window.localStorage.setItem('lang', 'ruShift');
+        break;
+      case this.keyLayout.ruShift:
+        this.changeLanguageItem(this.keyLayout.ru);
+        window.localStorage.setItem('lang', 'ru');
+        break;
     }
   }
 
   changeLanguage() {
-    if (this.props.lang === this.keyLayout.eng) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.ru[i];
-      });
-      this.props.lang = this.keyLayout.ru;
-      window.localStorage.setItem('lang', 'ru');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.engShift) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.ruShift[i];
-      });
-      this.props.lang = this.keyLayout.ruShift;
-      window.localStorage.setItem('lang', 'ruShift');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.ru) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.eng[i];
-      });
-      this.props.lang = this.keyLayout.eng;
-      window.localStorage.setItem('lang', 'eng');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
-    } else if (this.props.lang === this.keyLayout.ruShift) {
-      this.elements.keys.forEach((item, i) => {
-        const element = item;
-        element.textContent = this.keyLayout.engShift[i];
-      });
-      this.props.lang = this.keyLayout.engShift;
-      window.localStorage.setItem('lang', 'engShift');
-      this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
+    switch (this.props.lang) {
+      case this.keyLayout.eng:
+        this.changeLanguageItem(this.keyLayout.ru);
+        window.localStorage.setItem('lang', 'ru');
+        break;
+      case this.keyLayout.engShift:
+        this.changeLanguageItem(this.keyLayout.ruShift);
+        window.localStorage.setItem('lang', 'ruShift');
+        break;
+      case this.keyLayout.ru:
+        this.changeLanguageItem(this.keyLayout.eng);
+        window.localStorage.setItem('lang', 'eng');
+        break;
+      case this.keyLayout.ruShift:
+        this.changeLanguageItem(this.keyLayout.engShift);
+        window.localStorage.setItem('lang', 'engShift');
+        break;
     }
+  }
+
+  changeLanguageItem(value) {
+    this.elements.keys.forEach((item, i) => {
+      const element = item;
+      element.textContent = value[i];
+    });
+    this.props.lang = value;
+    this.elements.keys = this.elements.keysContainer.querySelectorAll('.keyboard__note');
   }
 }
 
